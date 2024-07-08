@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -16,15 +17,22 @@ func (u User) getFullName() string {
 }
 
 func main() {
-	u := User{name: "Simtel"}
+	u := User{name: "Simtel", lastname: "Simuls"}
+
+	t := os.Args
+
+	name, lastname := u.name, u.lastname
 
 	u.email = "email@example.com"
 
 	fmt.Println(u.name)
 	fmt.Println(u.getFullName())
+	fmt.Println(name + " " + lastname)
 	fmt.Println(time.DateOnly)
 
-	l := Location{name: "Ulyanovsk"}
+	fmt.Println("args:")
+	fmt.Println(len(t))
+	location := Location{id: 1, name: "Ulyanovsk"}
 
-	fmt.Println(l.getName())
+	fmt.Println(location.getName())
 }
