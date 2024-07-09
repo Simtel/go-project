@@ -6,33 +6,34 @@ import (
 	"time"
 )
 
-type User struct {
-	name     string
-	lastname string
-	email    string
-}
-
-func (u User) getFullName() string {
-	return u.name + " " + u.lastname
-}
-
 func main() {
-	u := User{name: "Simtel", lastname: "Simuls"}
+	// Инициализация пользователя
+	user := User{name: "Simtel", lastname: "Simuls", email: "email@example.com"}
 
-	t := os.Args
+	// Вывод информации о пользователе
+	fmt.Println("Имя пользователя:", user.name)
+	fmt.Println("Полное имя:", user.getFullName())
 
-	name, lastname := u.name, u.lastname
+	// Аргументы командной строки
+	args := os.Args
+	fmt.Println("Аргументы командной строки (количество):", len(args))
 
-	u.email = "email@example.com"
+	// Инициализация локаций
+	location := &Location{id: 1, name: "Ulyanovsk"}
+	parentLocation := &Location{id: 2, name: "Russia"}
+	location.setParent(parentLocation)
 
-	fmt.Println(u.name)
-	fmt.Println(u.getFullName())
-	fmt.Println(name + " " + lastname)
-	fmt.Println(time.DateOnly)
+	// Добавление региона к локации
+	addRegion(location)
 
-	fmt.Println("args:")
-	fmt.Println(len(t))
-	location := Location{id: 1, name: "Ulyanovsk"}
+	// Вывод информации о локациях
+	fmt.Println("Локация:", location.getName())
+	fmt.Println("Родительская локация:", location.parent.getName())
 
-	fmt.Println(location.getName())
+	// Вывод текущей даты (вместо устаревшего time.DateOnly, так как такого метода нет в стандартной библиотеке)
+	fmt.Println("Текущая дата:", time.Now().Format("2006-01-02"))
+}
+
+func addRegion(l *Location) {
+	l.name = "Region:" + l.name
 }
