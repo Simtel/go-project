@@ -26,6 +26,12 @@ func main() {
 	// Добавление региона к локации
 	addRegion(location)
 
+	scores := []int{1, 2, 3, 4, 5}
+	scores = append(scores, 6)
+
+	fmt.Println("Кол-во элементов в массиве", len(arrays()))
+	fmt.Println("Кол-во элементов в срезе", len(scores))
+	fmt.Println("Кол-во элементов в карте", len(makeMap()))
 	// Вывод информации о локациях
 	fmt.Println("Локация:", location.getName())
 	fmt.Println("Родительская локация:", location.parent.getName())
@@ -36,4 +42,26 @@ func main() {
 
 func addRegion(l *Location) {
 	l.name = "Region:" + l.name
+}
+
+func arrays() [2]int {
+	var ar [2]int
+	var resultAr [2]int
+	ar[0] = 1
+	ar[1] = 2
+	for index, element := range ar {
+		resultAr[index] = element + 10
+	}
+	return resultAr
+}
+
+func makeMap() map[string]int {
+	source := make(map[string]int)
+
+	source["first"] = 1
+	source["second"] = 2
+
+	delete(source, "first")
+
+	return source
 }
