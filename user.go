@@ -6,7 +6,7 @@ type User struct {
 	name     string
 	lastname string
 	email    string
-	contact  *users.Contact
+	contact  users.Contact
 }
 
 func (u *User) getFullName() string {

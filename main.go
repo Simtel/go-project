@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-project/users"
 	"os"
 	"time"
 )
@@ -9,6 +10,8 @@ import (
 func main() {
 	// Инициализация пользователя
 	user := User{name: "Simtel", lastname: "Simuls", email: "email@example.com"}
+	contact := users.Contact{Phone: "4343434343", Address: "address home"}
+	user.contact = contact
 
 	// Вывод информации о пользователе
 	fmt.Println("Имя пользователя:", user.name)
