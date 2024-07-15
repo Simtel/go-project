@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-project/models"
 	"go-project/users"
 	"os"
 	"time"
@@ -9,22 +10,22 @@ import (
 
 func main() {
 	// Инициализация пользователя
-	user := User{name: "Simtel", lastname: "Simuls", email: "email@example.com"}
+	user := models.User{Name: "Simtel", Lastname: "Simuls", Email: "email@example.com"}
 	contact := users.Contact{Phone: "4343434343", Address: "address home"}
-	user.contact = contact
+	user.Contact = contact
 
 	// Вывод информации о пользователе
-	fmt.Println("Имя пользователя:", user.name)
-	fmt.Println("Полное имя:", user.getFullName())
+	fmt.Println("Имя пользователя:", user.Name)
+	fmt.Println("Полное имя:", user.GetFullName())
 
 	// Аргументы командной строки
 	args := os.Args
 	fmt.Println("Аргументы командной строки (количество):", len(args))
 
 	// Инициализация локаций
-	location := &Location{id: 1, name: "Ulyanovsk"}
-	parentLocation := &Location{id: 2, name: "Russia"}
-	location.setParent(parentLocation)
+	location := &models.Location{Id: 1, Name: "Ulyanovsk"}
+	parentLocation := &models.Location{Id: 2, Name: "Russia"}
+	location.SetParent(parentLocation)
 
 	// Добавление региона к локации
 	addRegion(location)
@@ -36,15 +37,15 @@ func main() {
 	fmt.Println("Кол-во элементов в срезе", len(scores))
 	fmt.Println("Кол-во элементов в карте", len(makeMap()))
 	// Вывод информации о локациях
-	fmt.Println("Локация:", location.getName())
-	fmt.Println("Родительская локация:", location.parent.getName())
+	fmt.Println("Локация:", location.GetName())
+	fmt.Println("Родительская локация:", location.Parent.GetName())
 
 	// Вывод текущей даты (вместо устаревшего time.DateOnly, так как такого метода нет в стандартной библиотеке)
 	fmt.Println("Текущая дата:", time.Now().Format("2006-01-02"))
 }
 
-func addRegion(l *Location) {
-	l.name = "Region:" + l.name
+func addRegion(l *models.Location) {
+	l.Name = "Region:" + l.Name
 }
 
 func arrays() [2]int {

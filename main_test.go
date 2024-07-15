@@ -1,11 +1,12 @@
 package main
 
 import (
+	"go-project/models"
 	"testing"
 )
 
 func TestUser(t *testing.T) {
-	u := User{name: "Simtel"}
+	u := models.User{name: "Simtel"}
 
 	if u.name != "Simtel" {
 		t.Errorf("Expected name to be 'Simtel', but got '%s'", u.name)
