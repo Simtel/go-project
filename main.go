@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-project/contracts"
 	"go-project/models"
 	"go-project/users"
 	"os"
@@ -10,7 +11,7 @@ import (
 
 func main() {
 	// Инициализация пользователя
-	user := models.User{Name: "Simtel", Lastname: "Simuls", Email: "email@example.com"}
+	user := &models.User{Name: "Simtel", Lastname: "Simuls", Email: "email@example.com"}
 	contact := users.Contact{Phone: "4343434343", Address: "address home"}
 	user.Contact = contact
 
@@ -42,6 +43,11 @@ func main() {
 
 	// Вывод текущей даты (вместо устаревшего time.DateOnly, так как такого метода нет в стандартной библиотеке)
 	fmt.Println("Текущая дата:", time.Now().Format("2006-01-02"))
+
+	myModels := []contracts.Models{user, location}
+	for _, model := range myModels {
+		fmt.Println(model.GetName())
+	}
 }
 
 func addRegion(l *models.Location) {
