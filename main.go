@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"go-project/contracts"
 	"go-project/models"
@@ -33,6 +34,17 @@ func main() {
 
 	scores := []int{1, 2, 3, 4, 5}
 	scores = append(scores, 6)
+
+	sum, errorSum := Sum(2, 1)
+	fmt.Println("Сумма", sum)
+	if errorSum != nil {
+		fmt.Println("Ошибка", errorSum)
+	}
+	sum2, errorSum2 := Sum(1, 2)
+	if errorSum2 == nil {
+		fmt.Println("Сумма 2:", sum2)
+	}
+	fmt.Println("Ошибка2:", errorSum2)
 
 	fmt.Println("Кол-во элементов в массиве", len(arrays()))
 	fmt.Println("Кол-во элементов в срезе", len(scores))
@@ -74,4 +86,11 @@ func makeMap() map[string]int {
 	delete(source, "first")
 
 	return source
+}
+
+func Sum(a int, b int) (int, error) {
+	if b > a {
+		return 0, errors.New("b must be less than a")
+	}
+	return a + b, nil
 }
