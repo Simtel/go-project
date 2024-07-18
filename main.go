@@ -60,6 +60,8 @@ func main() {
 	for _, model := range myModels {
 		fmt.Println(model.GetName())
 	}
+
+	ShowDomains()
 }
 
 func addRegion(l *models.Location) {
