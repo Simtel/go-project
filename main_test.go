@@ -6,13 +6,17 @@ import (
 )
 
 func TestUser(t *testing.T) {
-	u := models.User{name: "Simtel"}
+	u := models.User{Name: "Simtel", Email: "email@email.com"}
 
-	if u.name != "Simtel" {
-		t.Errorf("Expected name to be 'Simtel', but got '%s'", u.name)
+	if u.Name != "Simtel" {
+		t.Errorf("Expected name to be 'Simtel', but got '%s'", u.Name)
 	}
 
-	if u.email != "simtel@gmail.com" {
-		t.Errorf("Expected email to be 'simtel@gmail.com', but got '%s'", u.email)
+	if u.Email != "email@email.com" {
+		t.Errorf("Expected email to be 'email@email.com', but got '%s'", u.Email)
+	}
+
+	if u.GetName() != "Simtel" {
+		t.Errorf("Expected name to be 'Simtel', but got '%s'", u.GetName())
 	}
 }
