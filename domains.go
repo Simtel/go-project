@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"github.com/joho/godotenv"
 	"io"
 	"net/http"
@@ -18,16 +18,18 @@ type Domain struct {
 	ExpireAt string `json:"expire_at"`
 }
 
-func ShowDomains() {
-	Init()
+func ShowDomains() ([]Domain, error) {
+	token, err := Init()
+	if err != nil {
+		return nil, err
+	}
 
-	fmt.Println("Token:", Token)
-	bearer := "Bearer " + Token
+	bearer := "Bearer " + token
 
 	req, errorReq := http.NewRequest("GET", "https://armisimtel.ru/api/v1/domains", bytes.NewBuffer(nil))
 
 	if errorReq != nil {
-		fmt.Println(errorReq)
+		return nil, errorReq
 	}
 
 	req.Header.Add("Authorization", bearer)
@@ -38,10 +40,12 @@ func ShowDomains() {
 	resp, errorResp := client.Do(req)
 
 	if errorResp != nil {
-		fmt.Println(errorResp)
+		return nil, errorResp
 	}
 
-	fmt.Println(resp.Status)
+	if resp.StatusCode != 200 {
+		return nil, errors.New(resp.Status)
+	}
 
 	var parsed struct {
 		Data []Domain `json:"data"`
@@ -50,29 +54,26 @@ func ShowDomains() {
 	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 
 	errJson := json.Unmarshal([]byte(body), &parsed)
 	if errJson != nil {
-		fmt.Println("Ошибка декодирования JSON:", err)
-		return
+
+		return nil, errors.New("Ошибка декодирования JSON:" + err.Error())
 	}
 
-	for _, domain := range parsed.Data {
-		fmt.Println(domain.Name)
-	}
+	return parsed.Data, nil
 }
 
-func Init() {
+func Init() (string, error) {
 	if err := godotenv.Load(".env.local", ".env"); err != nil {
-		fmt.Println("Error load env file")
+		return "", errors.New("error load env file")
 	}
 
 	token, exists := os.LookupEnv("ARMISIMTEL_TOKEN")
 	if !exists {
-		fmt.Println("You need to set ARMISIMTEL_TOKEN environment variable")
+		return "", errors.New("you need to set ARMISIMTEL_TOKEN environment variable")
 	}
-	fmt.Println("Token:", token)
-	Token = token
+	return token, nil
 }
