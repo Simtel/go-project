@@ -6,11 +6,64 @@ import (
 	"go-project/contracts"
 	"go-project/models"
 	"go-project/users"
+	"html"
+	"log"
+	"net/http"
 	"os"
 	"time"
 )
 
 func main() {
+	index()
+	server()
+}
+
+func addRegion(l *models.Location) {
+	l.Name = "Region:" + l.Name
+}
+
+func arrays() [2]int {
+	var ar [2]int
+	var resultAr [2]int
+	ar[0] = 1
+	ar[1] = 2
+	for index, element := range ar {
+		resultAr[index] = element + 10
+	}
+	return resultAr
+}
+
+func makeMap() map[string]int {
+	source := make(map[string]int)
+
+	source["first"] = 1
+	source["second"] = 2
+
+	delete(source, "first")
+
+	return source
+}
+
+func Sum(a int, b int) (int, error) {
+	if b > a {
+		return 0, errors.New("b must be less than a")
+	}
+	return a + b, nil
+}
+
+func server() {
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	})
+
+	err := http.ListenAndServe(":8082", nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+}
+
+func index() {
 	// Инициализация пользователя
 	user := &models.User{Name: "Simtel", Lastname: "Simuls", Email: "email@example.com"}
 	contact := users.Contact{Phone: "4343434343", Address: "address home"}
@@ -62,37 +115,4 @@ func main() {
 	}
 
 	ShowDomains()
-}
-
-func addRegion(l *models.Location) {
-	l.Name = "Region:" + l.Name
-}
-
-func arrays() [2]int {
-	var ar [2]int
-	var resultAr [2]int
-	ar[0] = 1
-	ar[1] = 2
-	for index, element := range ar {
-		resultAr[index] = element + 10
-	}
-	return resultAr
-}
-
-func makeMap() map[string]int {
-	source := make(map[string]int)
-
-	source["first"] = 1
-	source["second"] = 2
-
-	delete(source, "first")
-
-	return source
-}
-
-func Sum(a int, b int) (int, error) {
-	if b > a {
-		return 0, errors.New("b must be less than a")
-	}
-	return a + b, nil
 }
