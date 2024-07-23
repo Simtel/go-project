@@ -2,13 +2,17 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
 	"go-project/common"
 	"go-project/domains"
 	"net/http"
 )
 
 func main() {
+	common.Init()
+
 	r := chi.NewRouter()
+	r.Use(render.SetContentType(render.ContentTypeJSON))
 
 	domains.Routes(r)
 

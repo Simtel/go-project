@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
 	"go-project/models"
 	"io"
 	"net/http"
@@ -18,9 +17,6 @@ var BASE_URL string = "https://armisimtel.ru/api/v1"
 var Token string
 
 func Init() (string, error) {
-	if err := godotenv.Load(".env.local", ".env"); err != nil {
-		return "", errors.New("error load env file")
-	}
 
 	token, exists := os.LookupEnv("ARMISIMTEL_TOKEN")
 	if !exists {
@@ -29,7 +25,7 @@ func Init() (string, error) {
 	return token, nil
 }
 
-func ShowDomains() ([]models.Domain, error) {
+func ShowDomains() ([]*models.Domain, error) {
 
 	resp, errorResp := request("GET", BASE_URL+"/domains", nil)
 
@@ -38,7 +34,7 @@ func ShowDomains() ([]models.Domain, error) {
 	}
 
 	var parsed struct {
-		Data []models.Domain `json:"data"`
+		Data []*models.Domain `json:"data"`
 	}
 
 	body, err := io.ReadAll(resp.Body)
