@@ -11,7 +11,6 @@ func main() {
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		SendSuccessJsonResponse(w, "Hello")
-		return
 	})
 
 	r.Get("/domains", func(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +20,6 @@ func main() {
 			return
 		}
 		SendSuccessJsonResponse(w, domains)
-		return
 	})
 
 	r.Get("/domains/{id}", func(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +39,6 @@ func main() {
 
 	r.Get("/error", func(w http.ResponseWriter, r *http.Request) {
 		SendErrorResponse(w, "Something went wrong")
-		return
 	})
 
 	err := http.ListenAndServe(":3000", r)
