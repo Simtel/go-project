@@ -4,40 +4,34 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/joho/godotenv"
+	"go-project/models"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 )
+
+var BASE_URL string = "https://armisimtel.ru/api/v1"
 
 var Token string
 
-type Domain struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	ExpireAt string `json:"expire_at"`
+func Init() (string, error) {
+	if err := godotenv.Load(".env.local", ".env"); err != nil {
+		return "", errors.New("error load env file")
+	}
+
+	token, exists := os.LookupEnv("ARMISIMTEL_TOKEN")
+	if !exists {
+		return "", errors.New("you need to set ARMISIMTEL_TOKEN environment variable")
+	}
+	return token, nil
 }
 
-func ShowDomains() ([]Domain, error) {
-	token, err := Init()
-	if err != nil {
-		return nil, err
-	}
+func ShowDomains() ([]models.Domain, error) {
 
-	bearer := "Bearer " + token
-
-	req, errorReq := http.NewRequest("GET", "https://armisimtel.ru/api/v1/domains", bytes.NewBuffer(nil))
-
-	if errorReq != nil {
-		return nil, errorReq
-	}
-
-	req.Header.Add("Authorization", bearer)
-	req.Header.Add("Accept", "application/json")
-
-	client := &http.Client{}
-
-	resp, errorResp := client.Do(req)
+	resp, errorResp := request(BASE_URL + "/domains")
 
 	if errorResp != nil {
 		return nil, errorResp
@@ -48,7 +42,7 @@ func ShowDomains() ([]Domain, error) {
 	}
 
 	var parsed struct {
-		Data []Domain `json:"data"`
+		Data []models.Domain `json:"data"`
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -62,18 +56,59 @@ func ShowDomains() ([]Domain, error) {
 
 		return nil, errors.New("Ошибка декодирования JSON:" + err.Error())
 	}
-
+	fmt.Println("Получен список доменов")
 	return parsed.Data, nil
 }
 
-func Init() (string, error) {
-	if err := godotenv.Load(".env.local", ".env"); err != nil {
-		return "", errors.New("error load env file")
+func ShowDomainById(domainId int) (*models.Domain, error) {
+	resp, errorResp := request(BASE_URL + "/domains/" + strconv.Itoa(domainId))
+
+	if errorResp != nil {
+		return nil, errorResp
 	}
 
-	token, exists := os.LookupEnv("ARMISIMTEL_TOKEN")
-	if !exists {
-		return "", errors.New("you need to set ARMISIMTEL_TOKEN environment variable")
+	if resp.StatusCode != 200 {
+		return nil, errors.New(resp.Status)
 	}
-	return token, nil
+
+	var parsed struct {
+		Data models.Domain `json:"data"`
+	}
+
+	body, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	errJson := json.Unmarshal([]byte(body), &parsed)
+	if errJson != nil {
+		return nil, errors.New("Ошибка декодирования JSON:" + err.Error())
+	}
+	fmt.Println("Получена информация по домену с ID: " + strconv.Itoa(domainId))
+	return &parsed.Data, nil
+}
+
+func request(url string) (*http.Response, error) {
+	token, err := Init()
+	if err != nil {
+		return nil, err
+	}
+
+	bearer := "Bearer " + token
+
+	req, errorReq := http.NewRequest("GET", url, bytes.NewBuffer(nil))
+
+	if errorReq != nil {
+		return nil, errorReq
+	}
+
+	req.Header.Add("Authorization", bearer)
+	req.Header.Add("Accept", "application/json")
+
+	client := &http.Client{}
+
+	resp, errorResp := client.Do(req)
+
+	return resp, errorResp
 }
