@@ -37,10 +37,6 @@ func ShowDomains() ([]models.Domain, error) {
 		return nil, errorResp
 	}
 
-	if resp.StatusCode != 200 {
-		return nil, errors.New(resp.Status)
-	}
-
 	var parsed struct {
 		Data []models.Domain `json:"data"`
 	}
@@ -56,7 +52,7 @@ func ShowDomains() ([]models.Domain, error) {
 
 		return nil, errors.New("Ошибка декодирования JSON:" + err.Error())
 	}
-	fmt.Println("Получен список доменов")
+	fmt.Println("Получен общий список доменов")
 	return parsed.Data, nil
 }
 
@@ -65,10 +61,6 @@ func ShowDomainById(domainId int) (*models.Domain, error) {
 
 	if errorResp != nil {
 		return nil, errorResp
-	}
-
-	if resp.StatusCode != 200 {
-		return nil, errors.New(resp.Status)
 	}
 
 	var parsed struct {
@@ -109,6 +101,14 @@ func request(url string) (*http.Response, error) {
 	client := &http.Client{}
 
 	resp, errorResp := client.Do(req)
+
+	if errorResp != nil {
+		return nil, errorResp
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, errors.New(resp.Status)
+	}
 
 	return resp, errorResp
 }

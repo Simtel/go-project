@@ -11,3 +11,6 @@ build:
 
 run:
 	go run .
+
+watch:
+	 ~/go/bin/gow run .
