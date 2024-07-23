@@ -1,4 +1,4 @@
-package main
+package domains
 
 import (
 	"bytes"
@@ -31,7 +31,7 @@ func Init() (string, error) {
 
 func ShowDomains() ([]models.Domain, error) {
 
-	resp, errorResp := request(BASE_URL + "/domains")
+	resp, errorResp := request("GET", BASE_URL+"/domains", nil)
 
 	if errorResp != nil {
 		return nil, errorResp
@@ -57,7 +57,7 @@ func ShowDomains() ([]models.Domain, error) {
 }
 
 func ShowDomainById(domainId int) (*models.Domain, error) {
-	resp, errorResp := request(BASE_URL + "/domains/" + strconv.Itoa(domainId))
+	resp, errorResp := request("GET", BASE_URL+"/domains/"+strconv.Itoa(domainId), nil)
 
 	if errorResp != nil {
 		return nil, errorResp
@@ -81,7 +81,22 @@ func ShowDomainById(domainId int) (*models.Domain, error) {
 	return &parsed.Data, nil
 }
 
-func request(url string) (*http.Response, error) {
+func CreateDomain(payload *DomainPayload) (*models.Domain, error) {
+	jsonData, err := json.Marshal(payload)
+	if err != nil {
+		return nil, errors.New("Ошибка преобразования JSON:" + err.Error())
+	}
+	resp, errorResp := request("POST", BASE_URL+"/domains", jsonData)
+	if errorResp != nil {
+		return nil, errorResp
+	}
+	if resp.StatusCode != 200 {
+		return nil, errors.New(resp.Status)
+	}
+	return &models.Domain{Name: payload.Name}, nil
+}
+
+func request(method string, url string, data []byte) (*http.Response, error) {
 	token, err := Init()
 	if err != nil {
 		return nil, err
@@ -89,13 +104,14 @@ func request(url string) (*http.Response, error) {
 
 	bearer := "Bearer " + token
 
-	req, errorReq := http.NewRequest("GET", url, bytes.NewBuffer(nil))
+	req, errorReq := http.NewRequest(method, url, bytes.NewBuffer(data))
 
 	if errorReq != nil {
 		return nil, errorReq
 	}
 
 	req.Header.Add("Authorization", bearer)
+	req.Header.Set("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 
 	client := &http.Client{}

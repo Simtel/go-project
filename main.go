@@ -2,43 +2,22 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5"
+	"go-project/common"
+	"go-project/domains"
 	"net/http"
-	"strconv"
 )
 
 func main() {
 	r := chi.NewRouter()
 
+	domains.Routes(r)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		SendSuccessJsonResponse(w, "Hello")
-	})
-
-	r.Get("/domains", func(w http.ResponseWriter, r *http.Request) {
-		domains, err := ShowDomains()
-		if err != nil {
-			SendErrorResponse(w, err.Error())
-			return
-		}
-		SendSuccessJsonResponse(w, domains)
-	})
-
-	r.Get("/domains/{id}", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		domainId, errConvert := strconv.Atoi(chi.URLParam(r, "id"))
-		if errConvert != nil {
-			SendErrorResponse(w, errConvert.Error())
-			return
-		}
-		domains, err := ShowDomainById(domainId)
-		if err != nil {
-			SendErrorResponse(w, err.Error())
-			return
-		}
-		SendSuccessJsonResponse(w, domains)
+		common.SendSuccessJsonResponse(w, "Hello")
 	})
 
 	r.Get("/error", func(w http.ResponseWriter, r *http.Request) {
-		SendErrorResponse(w, "Something went wrong")
+		common.SendErrorResponse(w, "Something went wrong")
 	})
 
 	err := http.ListenAndServe(":3000", r)
