@@ -6,9 +6,11 @@ import (
 	"go-project/models"
 	"os"
 	"strconv"
+	"time"
 )
 
 func SaveDomains(domains []*models.Domain) error {
+	time.Sleep(time.Second * 3)
 	file, err := os.Create("var/domains.csv")
 	if err != nil {
 		return fmt.Errorf("error opening file: %v", err)
@@ -33,5 +35,6 @@ func SaveDomains(domains []*models.Domain) error {
 			return fmt.Errorf("error writing record to file: %v", err)
 		}
 	}
+	fmt.Println("Saved domains.")
 	return nil
 }

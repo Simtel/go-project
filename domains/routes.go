@@ -2,6 +2,7 @@ package domains
 
 import (
 	"errors"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"go-project/common"
@@ -17,11 +18,13 @@ func Routes(r *chi.Mux) {
 			common.SendErrorResponse(w, err.Error())
 			return
 		}
-		errSave := SaveDomains(domainsList)
-		if errSave != nil {
-			common.SendErrorResponse(w, errSave.Error())
-			return
-		}
+		go func() {
+			err := SaveDomains(domainsList)
+			if err != nil {
+				_ = fmt.Errorf("eror save fomain in file: %s", err)
+			}
+		}()
+
 		common.SendSuccessJsonResponse(w, domainsList)
 	})
 
