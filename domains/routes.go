@@ -17,6 +17,11 @@ func Routes(r *chi.Mux) {
 			common.SendErrorResponse(w, err.Error())
 			return
 		}
+		errSave := SaveDomains(domainsList)
+		if errSave != nil {
+			common.SendErrorResponse(w, errSave.Error())
+			return
+		}
 		common.SendSuccessJsonResponse(w, domainsList)
 	})
 

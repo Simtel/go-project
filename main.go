@@ -9,7 +9,8 @@ import (
 )
 
 func main() {
-	common.Init()
+	common.InitEnv()
+	common.InitFileStorage()
 
 	r := chi.NewRouter()
 	r.Use(render.SetContentType(render.ContentTypeJSON))

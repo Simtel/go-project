@@ -4,7 +4,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func Init() {
+func InitEnv() {
 	if err := godotenv.Load(".env.local", ".env"); err != nil {
 		panic("error load env file")
 	}
