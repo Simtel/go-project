@@ -3,6 +3,7 @@ package common
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 )
 
 type JsonResponse struct {
@@ -37,4 +38,15 @@ func SendErrorResponse(w http.ResponseWriter, message string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func SendFile(w http.ResponseWriter, r *http.Request, file *os.File) {
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Header().Set("Content-Disposition", "attachment; filename=\""+file.Name()+"\"")
+	fileInfo, err := file.Stat()
+	if err != nil {
+		http.Error(w, "Не удалось получить информацию о файле", http.StatusInternalServerError)
+		return
+	}
+	http.ServeContent(w, r, file.Name(), fileInfo.ModTime(), file)
 }

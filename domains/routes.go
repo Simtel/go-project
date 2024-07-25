@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/render"
 	"go-project/common"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -56,6 +57,18 @@ func Routes(r *chi.Mux) {
 		}
 
 		common.SendSuccessJsonResponse(w, createDomain)
+
+	})
+
+	r.Get("/domains/download", func(w http.ResponseWriter, r *http.Request) {
+		file, errOpen := os.Open("var/domains.csv")
+		if errOpen != nil {
+			common.SendErrorResponse(w, errOpen.Error())
+			return
+		}
+		defer file.Close()
+
+		common.SendFile(w, r, file)
 
 	})
 }
