@@ -6,11 +6,9 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
 	"go-project/common"
-	"go-project/domains"
-	"math/rand"
+	domains "go-project/internal/handler/http/domains"
 	"net/http"
 	"sync"
-	"time"
 )
 
 var (
@@ -38,27 +36,6 @@ func main() {
 
 	r.Get("/error", func(w http.ResponseWriter, r *http.Request) {
 		common.SendErrorResponse(w, "Something went wrong")
-	})
-
-	r.Get("/lock", func(w http.ResponseWriter, r *http.Request) {
-
-		for i := 0; i < 2; i++ {
-			go incr()
-		}
-		time.Sleep(time.Millisecond * 10)
-
-	})
-
-	r.Get("/channel", func(w http.ResponseWriter, r *http.Request) {
-		c := make(chan int)
-		for i := 0; i < 4; i++ {
-			worker := Worker{id: i}
-			go worker.process(c)
-		}
-		for {
-			c <- rand.Int()
-			time.Sleep(time.Millisecond * 50)
-		}
 	})
 
 	err := http.ListenAndServe(":3000", r)

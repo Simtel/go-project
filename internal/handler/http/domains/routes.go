@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"go-project/common"
+	domains2 "go-project/internal/services/domains"
 	"net/http"
 	"os"
 	"strconv"
@@ -14,13 +15,13 @@ import (
 func Routes(r *chi.Mux) {
 
 	r.Get("/domains", func(w http.ResponseWriter, r *http.Request) {
-		domainsList, err := ShowDomains()
+		domainsList, err := domains2.ShowDomains()
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
 		}
 		go func() {
-			err := SaveDomains(domainsList)
+			err := domains2.SaveDomains(domainsList)
 			if err != nil {
 				_ = fmt.Errorf("eror save fomain in file: %s", err)
 			}
@@ -35,7 +36,7 @@ func Routes(r *chi.Mux) {
 			common.SendErrorResponse(w, errConvert.Error())
 			return
 		}
-		domain, err := ShowDomainById(domainId)
+		domain, err := domains2.ShowDomainById(domainId)
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
@@ -50,7 +51,7 @@ func Routes(r *chi.Mux) {
 			return
 		}
 
-		createDomain, err := CreateDomain(domain)
+		createDomain, err := domains2.CreateDomain(domain)
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
