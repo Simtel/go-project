@@ -1,7 +1,6 @@
-package domains
+package api
 
 import (
-	"errors"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
@@ -45,7 +44,7 @@ func Routes(r *chi.Mux) {
 	})
 
 	r.Post("/domains", func(w http.ResponseWriter, r *http.Request) {
-		domain := &DomainPayload{}
+		domain := &domains2.DomainPayload{}
 		if err := render.Bind(r, domain); err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
@@ -62,7 +61,7 @@ func Routes(r *chi.Mux) {
 	})
 
 	r.Get("/domains/download", func(w http.ResponseWriter, r *http.Request) {
-		file, errOpen := os.Open("var/domains.csv")
+		file, errOpen := os.Open("var/api.csv")
 		if errOpen != nil {
 			common.SendErrorResponse(w, errOpen.Error())
 			return
@@ -72,16 +71,4 @@ func Routes(r *chi.Mux) {
 		common.SendFile(w, r, file)
 
 	})
-}
-
-type DomainPayload struct {
-	Name string `json:"name"`
-}
-
-func (d *DomainPayload) Bind(r *http.Request) error {
-
-	if d.Name == "" {
-		return errors.New("name is required")
-	}
-	return nil
 }

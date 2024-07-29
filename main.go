@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
 	"go-project/common"
-	domains "go-project/internal/handler/http/domains"
+	"go-project/internal/handler/http/api"
 	"net/http"
 	"sync"
 )
@@ -28,7 +28,7 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(render.SetContentType(render.ContentTypeJSON))
 
-	domains.Routes(r)
+	api.Routes(r)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		common.SendSuccessJsonResponse(w, "Hello")

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	http2 "go-project/internal/handler/http/domains"
 	"go-project/models"
 	"io"
 	"net/http"
@@ -78,7 +77,7 @@ func ShowDomainById(domainId int) (*models.Domain, error) {
 	return &parsed.Data, nil
 }
 
-func CreateDomain(payload *http2.DomainPayload) (*models.Domain, error) {
+func CreateDomain(payload *DomainPayload) (*models.Domain, error) {
 	jsonData, err := json.Marshal(payload)
 	if err != nil {
 		return nil, errors.New("Ошибка преобразования JSON:" + err.Error())
@@ -124,4 +123,16 @@ func request(method string, url string, data []byte) (*http.Response, error) {
 	}
 
 	return resp, errorResp
+}
+
+type DomainPayload struct {
+	Name string `json:"name"`
+}
+
+func (d *DomainPayload) Bind(r *http.Request) error {
+
+	if d.Name == "" {
+		return errors.New("name is required")
+	}
+	return nil
 }
