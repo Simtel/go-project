@@ -5,16 +5,27 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"go-project/common"
+	"go-project/internal/adapter/httprepo/domainsrepo"
+	"go-project/internal/services/armisimtel"
 	domains2 "go-project/internal/services/domains"
 	"net/http"
 	"os"
 	"strconv"
 )
 
-func Routes(r *chi.Mux) {
+type DomainsApi struct {
+	r    *chi.Mux
+	repo *domainsrepo.Repository
+}
 
-	r.Get("/domains", func(w http.ResponseWriter, r *http.Request) {
-		domainsList, err := domains2.ShowDomains()
+func NewDomainsApi(r *chi.Mux, repo *domainsrepo.Repository) *DomainsApi {
+	return &DomainsApi{r: r, repo: repo}
+}
+
+func (a *DomainsApi) AddRoutes() {
+
+	a.r.Get("/domains", func(w http.ResponseWriter, r *http.Request) {
+		domainsList, err := a.repo.GetAll()
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
@@ -29,13 +40,13 @@ func Routes(r *chi.Mux) {
 		common.SendSuccessJsonResponse(w, domainsList)
 	})
 
-	r.Get("/domains/{id}", func(w http.ResponseWriter, r *http.Request) {
+	a.r.Get("/domains/{id}", func(w http.ResponseWriter, r *http.Request) {
 		domainId, errConvert := strconv.Atoi(chi.URLParam(r, "id"))
 		if errConvert != nil {
 			common.SendErrorResponse(w, errConvert.Error())
 			return
 		}
-		domain, err := domains2.ShowDomainById(domainId)
+		domain, err := a.repo.GetById(domainId)
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
@@ -43,14 +54,14 @@ func Routes(r *chi.Mux) {
 		common.SendSuccessJsonResponse(w, domain)
 	})
 
-	r.Post("/domains", func(w http.ResponseWriter, r *http.Request) {
-		domain := &domains2.DomainPayload{}
+	a.r.Post("/domains", func(w http.ResponseWriter, r *http.Request) {
+		domain := &armisimtel.DomainPayload{}
 		if err := render.Bind(r, domain); err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
 		}
 
-		createDomain, err := domains2.CreateDomain(domain)
+		createDomain, err := a.repo.New(domain)
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
@@ -60,13 +71,18 @@ func Routes(r *chi.Mux) {
 
 	})
 
-	r.Get("/domains/download", func(w http.ResponseWriter, r *http.Request) {
+	a.r.Get("/domains/download", func(w http.ResponseWriter, r *http.Request) {
 		file, errOpen := os.Open("var/api.csv")
 		if errOpen != nil {
 			common.SendErrorResponse(w, errOpen.Error())
 			return
 		}
-		defer file.Close()
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				panic(err)
+			}
+		}(file)
 
 		common.SendFile(w, r, file)
 
