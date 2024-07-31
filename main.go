@@ -19,14 +19,7 @@ func main() {
 	a := app.NewContainer(&http.Client{}, r)
 
 	a.GetDomainsApi().AddRoutes()
-
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		common.SendSuccessJsonResponse(w, "Hello")
-	})
-
-	r.Get("/error", func(w http.ResponseWriter, r *http.Request) {
-		common.SendErrorResponse(w, "Something went wrong")
-	})
+	a.GetMainApi().AddRoutes()
 
 	err := http.ListenAndServe(":3000", r)
 	if err != nil {

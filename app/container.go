@@ -39,3 +39,7 @@ func (c *Container) GetHttpClient() *http.Client {
 func (c *Container) GetRouter() *chi.Mux {
 	return c.router
 }
+
+func (c *Container) GetMainApi() *api.MainApi {
+	return api.NewMainApi(c.GetRouter())
+}
