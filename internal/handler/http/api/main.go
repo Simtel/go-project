@@ -19,7 +19,6 @@ func (a *MainApi) AddRoutes() {
 
 	a.r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, r, Home{Payload: "Hello", Success: true})
-		//common.SendSuccessJsonResponse(w, "Hello, World")
 	})
 
 	a.r.Get("/error", func(w http.ResponseWriter, r *http.Request) {
