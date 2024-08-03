@@ -1,22 +1,42 @@
 package domainsrepo
 
 import (
-	"go-project/models"
+	"bytes"
+	"errors"
+	gomock2 "github.com/golang/mock/gomock"
+	"go-project/internal/services/armisimtel"
+	"go-project/mock"
+	"io"
+	"net/http"
 	"testing"
 )
 
 func TestRepo(t *testing.T) {
-	u := models.User{Name: "Simtel", Email: "email@email.com"}
+	gomock := &gomock2.Controller{T: t}
 
-	if u.Name != "Simtel" {
-		t.Errorf("Expected name to be 'Simtel', but got '%s'", u.Name)
+	request := MockRequest(gomock, SimulateResponse(), errors.New("some error"))
+	repo := NewRepository(request)
+
+	domains, err := repo.GetAll()
+	if err != nil {
+		t.Error(err)
 	}
-
-	if u.Email != "email@email.com" {
-		t.Errorf("Expected email to be 'email@email.com', but got '%s'", u.Email)
+	if len(domains) == 0 {
+		t.Error("domains is empty")
 	}
+}
 
-	if u.GetName() != "Simtel" {
-		t.Errorf("Expected name to be 'Simtel', but got '%s'", u.GetName())
+func MockRequest(controller *gomock2.Controller, result *http.Response, err error) armisimtel.RequestInterface {
+	mockRequest := mock.NewMockRequestInterface(controller)
+	mockRequest.EXPECT().Request("GET", "/domains", nil).Return(result, err)
+
+	return mockRequest
+}
+
+func SimulateResponse() *http.Response {
+	responseBody := io.NopCloser(bytes.NewReader([]byte(`{"value":"fixed"}`)))
+	return &http.Response{
+		StatusCode: 200,
+		Body:       responseBody,
 	}
 }

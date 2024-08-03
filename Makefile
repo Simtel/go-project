@@ -14,3 +14,6 @@ run:
 
 watch:
 	 ~/go/bin/gow run .
+
+mocks:
+	go generate ./...

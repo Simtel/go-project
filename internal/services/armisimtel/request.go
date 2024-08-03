@@ -15,6 +15,11 @@ type Request struct {
 	client *http.Client
 }
 
+//go:generate mockgen -source=request.go -destination=../../../mock/request.go -package=mock
+type RequestInterface interface {
+	Request(method string, url string, data []byte) (*http.Response, error)
+}
+
 func NewRequest(client *http.Client) *Request {
 	return &Request{
 		client: client,

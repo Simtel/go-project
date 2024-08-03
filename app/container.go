@@ -24,7 +24,7 @@ func (c *Container) GetDomainsRepo() *domainsrepo.Repository {
 	return domainsrepo.NewRepository(c.GetArmiSimtelRequest())
 }
 
-func (c *Container) GetArmiSimtelRequest() *armisimtel.Request {
+func (c *Container) GetArmiSimtelRequest() armisimtel.RequestInterface {
 	return armisimtel.NewRequest(c.GetHttpClient())
 }
 

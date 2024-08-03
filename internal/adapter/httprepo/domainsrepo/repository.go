@@ -11,10 +11,10 @@ import (
 )
 
 type Repository struct {
-	request *armisimtel.Request
+	request armisimtel.RequestInterface
 }
 
-func NewRepository(request *armisimtel.Request) *Repository {
+func NewRepository(request armisimtel.RequestInterface) *Repository {
 	return &Repository{
 		request: request,
 	}
