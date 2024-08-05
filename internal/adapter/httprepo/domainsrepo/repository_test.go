@@ -23,11 +23,14 @@ func TestRepo(t *testing.T) {
 	request := armisimtel.NewRequest(&http.Client{})
 	repo := NewRepository(request)
 
-	domains, err := repo.GetAll()
-	if err != nil {
+	domains, err := repo.GetByName("test.com")
+
+	if domains != nil {
+		t.Error("domains should be nil")
+	}
+
+	if err.Error() != "not implemented" {
 		t.Error(err)
 	}
-	if len(domains) == 0 {
-		t.Error("domains is empty")
-	}
+
 }

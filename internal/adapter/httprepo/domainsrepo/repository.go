@@ -20,6 +20,10 @@ func NewRepository(request armisimtel.RequestInterface) *Repository {
 	}
 }
 
+func (r *Repository) GetByName(name string) (*models.Domain, error) {
+	return nil, errors.New("not implemented")
+}
+
 func (r *Repository) GetAll() ([]*models.Domain, error) {
 
 	resp, errorResp := r.request.Request("GET", "/domains", nil)
