@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go-project/internal/models"
 	"go-project/internal/services/armisimtel"
-	"go-project/models"
 	"io"
 	"strconv"
 )

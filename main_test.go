@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-project/models"
+	"go-project/internal/models"
 	"testing"
 )
 

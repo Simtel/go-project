@@ -3,7 +3,7 @@ package domains
 import (
 	"encoding/csv"
 	"fmt"
-	"go-project/models"
+	"go-project/internal/models"
 	"os"
 	"strconv"
 	"time"
