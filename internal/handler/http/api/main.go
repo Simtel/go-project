@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
-	"go-project/common"
+	"go-project/internal/common"
 	"net/http"
 )
 

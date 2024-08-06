@@ -1,7 +1,7 @@
 package domainsrepo
 
 import (
-	"go-project/common"
+	"go-project/internal/common"
 	"go-project/internal/services/armisimtel"
 	"net/http"
 	"os"

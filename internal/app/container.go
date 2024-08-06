@@ -3,8 +3,10 @@ package app
 import (
 	"github.com/go-chi/chi/v5"
 	"go-project/internal/adapter/httprepo/domainsrepo"
+	"go-project/internal/adapter/mysqlrepo/usersrepo"
 	"go-project/internal/handler/http/api"
 	"go-project/internal/services/armisimtel"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -42,4 +44,12 @@ func (c *Container) GetRouter() *chi.Mux {
 
 func (c *Container) GetMainApi() *api.MainApi {
 	return api.NewMainApi(c.GetRouter())
+}
+
+func (c *Container) GetUsersApi(db *gorm.DB) *api.UsersApi {
+	return api.NewUsersApi(c.GetRouter(), usersrepo.NewUsersRepo(db))
+}
+
+func (c *Container) AddHandler(h api.Handler) {
+	h.AddRoutes()
 }
