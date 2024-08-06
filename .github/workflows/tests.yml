@@ -23,6 +23,7 @@ jobs:
 
       - name: Копировани env
         run: cp .env .env.local
+
       - name: Установка зависимостей
         run: go mod tidy
 

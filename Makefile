@@ -17,3 +17,6 @@ watch:
 
 mocks:
 	go generate ./...
+
+up:
+	docker compose up -d

@@ -6,11 +6,29 @@ import (
 	"github.com/go-chi/render"
 	"go-project/app"
 	"go-project/common"
+	"go-project/internal/models"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"net/http"
+	"os"
 )
 
 func main() {
 	common.InitEnv()
+	mysql_dsn, exists := os.LookupEnv("MYSQL_DSN")
+	if !exists {
+		panic("MYSQL environment variable not set")
+	}
+	db, errConn := gorm.Open(mysql.Open(mysql_dsn), &gorm.Config{})
+	if errConn != nil {
+		panic(errConn)
+	}
+
+	errMigrate := db.AutoMigrate(&models.User{})
+	if errMigrate != nil {
+		panic(errMigrate)
+	}
+
 	common.InitFileStorage()
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -21,8 +39,8 @@ func main() {
 	a.GetDomainsApi().AddRoutes()
 	a.GetMainApi().AddRoutes()
 
-	err := http.ListenAndServe(":3000", r)
-	if err != nil {
-		panic(err)
+	errServe := http.ListenAndServe(":3000", r)
+	if errServe != nil {
+		panic(errServe)
 	}
 }
