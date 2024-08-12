@@ -49,12 +49,12 @@ func main() {
 
 	r := setupRouter()
 
-	a := app.NewContainer(&http.Client{}, r)
+	a := app.NewContainer(&http.Client{}, r, db)
 
 	// добавление обработчиков маршрутов
 	a.AddHandler(a.GetDomainsApi())
 	a.AddHandler(a.GetMainApi())
-	a.AddHandler(a.GetUsersApi(db))
+	a.AddHandler(a.GetUsersApi())
 
 	log.Println("Server is starting on port 3000...")
 	err := http.ListenAndServe(":3000", r)

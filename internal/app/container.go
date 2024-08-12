@@ -13,12 +13,14 @@ import (
 type Container struct {
 	http   *http.Client
 	router *chi.Mux
+	db     *gorm.DB
 }
 
-func NewContainer(http *http.Client, router *chi.Mux) *Container {
+func NewContainer(http *http.Client, router *chi.Mux, db *gorm.DB) *Container {
 	return &Container{
 		http,
 		router,
+		db,
 	}
 }
 
@@ -46,8 +48,12 @@ func (c *Container) GetMainApi() *api.MainApi {
 	return api.NewMainApi(c.GetRouter())
 }
 
-func (c *Container) GetUsersApi(db *gorm.DB) *api.UsersApi {
-	return api.NewUsersApi(c.GetRouter(), usersrepo.NewUsersRepo(db))
+func (c *Container) GetUsersApi() *api.UsersApi {
+	return api.NewUsersApi(c.GetRouter(), usersrepo.NewUsersRepo(c.GetDB()))
+}
+
+func (c *Container) GetDB() *gorm.DB {
+	return c.db
 }
 
 func (c *Container) AddHandler(h api.Handler) {
