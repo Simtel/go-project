@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/render"
 	"go-project/internal/adapter/httprepo/domainsrepo"
 	"go-project/internal/common"
+	"go-project/internal/models"
 	"go-project/internal/services/armisimtel"
 	domains2 "go-project/internal/services/domains"
 	"net/http"
@@ -25,17 +26,21 @@ func NewDomainsApi(r *chi.Mux, repo *domainsrepo.Repository) *DomainsApi {
 func (a *DomainsApi) AddRoutes() {
 
 	a.r.Get("/domains", func(w http.ResponseWriter, r *http.Request) {
-		domainsList, err := a.repo.GetAll()
-		if err != nil {
-			common.SendErrorResponse(w, err.Error())
-			return
-		}
-		go func() {
+		domainsChannel := make(chan []*models.Domain)
+
+		go func(c chan []*models.Domain) {
+			domainsList := <-c
 			err := domains2.SaveDomains(domainsList)
 			if err != nil {
 				_ = fmt.Errorf("eror save fomain in file: %s", err)
 			}
-		}()
+		}(domainsChannel)
+
+		domainsList, err := a.repo.GetAll(domainsChannel)
+		if err != nil {
+			common.SendErrorResponse(w, err.Error())
+			return
+		}
 
 		common.SendSuccessJsonResponse(w, domainsList)
 	})

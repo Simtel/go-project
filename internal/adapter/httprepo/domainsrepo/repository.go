@@ -24,7 +24,7 @@ func (r *Repository) GetByName(name string) (*models.Domain, error) {
 	return nil, errors.New("not implemented")
 }
 
-func (r *Repository) GetAll() ([]*models.Domain, error) {
+func (r *Repository) GetAll(c chan []*models.Domain) ([]*models.Domain, error) {
 
 	resp, errorResp := r.request.Request("GET", "/domains", nil)
 
@@ -48,6 +48,7 @@ func (r *Repository) GetAll() ([]*models.Domain, error) {
 		return nil, errors.New("Ошибка декодирования JSON:" + err.Error())
 	}
 	fmt.Println("Получен общий список доменов")
+	c <- parsed.Data
 	return parsed.Data, nil
 }
 

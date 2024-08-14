@@ -25,7 +25,7 @@ func SaveDomains(domains []*models.Domain) error {
 	for _, domain := range domains {
 		records = append(
 			records,
-			[]string{strconv.Itoa(domain.ID), domain.Name, domain.ExpireAt},
+			[]string{strconv.Itoa(domain.ID), domain.Name, domain.ExpireAt, time.DateTime},
 		)
 	}
 
