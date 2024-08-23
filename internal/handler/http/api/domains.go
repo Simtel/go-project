@@ -5,6 +5,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"go-project/internal/adapter/httprepo/domainsrepo"
+	mysqldomainsrepo "go-project/internal/adapter/mysqlrepo/domainsrepo"
 	"go-project/internal/common"
 	"go-project/internal/models"
 	"go-project/internal/services/armisimtel"
@@ -15,12 +16,13 @@ import (
 )
 
 type DomainsApi struct {
-	r    *chi.Mux
-	repo *domainsrepo.Repository
+	r         *chi.Mux
+	repo      *domainsrepo.Repository
+	mysqlRepo *mysqldomainsrepo.DomainsRepo
 }
 
-func NewDomainsApi(r *chi.Mux, repo *domainsrepo.Repository) *DomainsApi {
-	return &DomainsApi{r: r, repo: repo}
+func NewDomainsApi(r *chi.Mux, repo *domainsrepo.Repository, domainsRepo *mysqldomainsrepo.DomainsRepo) *DomainsApi {
+	return &DomainsApi{r: r, repo: repo, mysqlRepo: domainsRepo}
 }
 
 func (a *DomainsApi) AddRoutes() {
@@ -40,6 +42,10 @@ func (a *DomainsApi) AddRoutes() {
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
+		}
+
+		for _, domain := range domainsList {
+			a.mysqlRepo.Add(domain)
 		}
 
 		common.SendSuccessJsonResponse(w, domainsList)

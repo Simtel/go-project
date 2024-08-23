@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/go-chi/chi/v5"
 	"go-project/internal/adapter/httprepo/domainsrepo"
+	mysqldomainsrepo "go-project/internal/adapter/mysqlrepo/domainsrepo"
 	"go-project/internal/adapter/mysqlrepo/usersrepo"
 	"go-project/internal/handler/http/api"
 	"go-project/internal/services/armisimtel"
@@ -33,7 +34,7 @@ func (c *Container) GetArmiSimtelRequest() armisimtel.RequestInterface {
 }
 
 func (c *Container) GetDomainsApi() *api.DomainsApi {
-	return api.NewDomainsApi(c.GetRouter(), c.GetDomainsRepo())
+	return api.NewDomainsApi(c.GetRouter(), c.GetDomainsRepo(), c.GetMysqlDomainsRepo())
 }
 
 func (c *Container) GetHttpClient() *http.Client {
@@ -58,4 +59,8 @@ func (c *Container) GetDB() *gorm.DB {
 
 func (c *Container) AddHandler(h api.Handler) {
 	h.AddRoutes()
+}
+
+func (c *Container) GetMysqlDomainsRepo() *mysqldomainsrepo.DomainsRepo {
+	return mysqldomainsrepo.NewDomainsRepo(c.GetDB())
 }
