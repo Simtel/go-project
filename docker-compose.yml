@@ -1,5 +1,15 @@
 services:
 
+  go:
+    container_name: go-project-go
+    build:
+      context: ./
+      dockerfile: .docker/go.Dockerfile
+    volumes:
+      - './:/usr/src/app'
+    links:
+      - db
+
   db:
     container_name: go-project-db
     image: mysql:8.3.0

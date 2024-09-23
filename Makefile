@@ -23,3 +23,6 @@ up:
 
 down:
 	docker compose down
+
+cli: ## PHP console
+	docker exec -it  go-project-go bash
