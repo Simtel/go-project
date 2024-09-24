@@ -33,7 +33,7 @@ func TestSaveDomains(t *testing.T) {
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
-
+			t.Fatalf("error closing file: %v", err)
 		}
 	}(file)
 

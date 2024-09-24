@@ -26,3 +26,6 @@ down:
 
 cli: ## PHP console
 	docker exec -it  go-project-go bash
+
+lint:
+	golangci-lint run
