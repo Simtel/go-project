@@ -9,9 +9,8 @@ import (
 	"time"
 )
 
-func SaveDomains(domains []*models.Domain) error {
-	time.Sleep(time.Second * 3)
-	file, err := os.Create("var/api.csv")
+func SaveDomains(domains []*models.Domain, filePath string) error {
+	file, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("error opening file: %v", err)
 	}
@@ -35,6 +34,5 @@ func SaveDomains(domains []*models.Domain) error {
 			return fmt.Errorf("error writing record to file: %v", err)
 		}
 	}
-	fmt.Println("Saved api.")
 	return nil
 }

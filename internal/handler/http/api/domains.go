@@ -32,7 +32,7 @@ func (a *DomainsApi) AddRoutes() {
 
 		go func(c chan []*models.Domain) {
 			domainsList := <-c
-			err := domains2.SaveDomains(domainsList)
+			err := domains2.SaveDomains(domainsList, "var/api.csv")
 			if err != nil {
 				_ = fmt.Errorf("eror save fomain in file: %s", err)
 			}
