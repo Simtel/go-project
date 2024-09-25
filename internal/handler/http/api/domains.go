@@ -12,6 +12,8 @@ import (
 	domains2 "go-project/internal/services/domains"
 	"net/http"
 	"os"
+	"path"
+	"runtime"
 	"strconv"
 )
 
@@ -83,7 +85,9 @@ func (a *DomainsApi) AddRoutes() {
 	})
 
 	a.r.Get("/domains/download", func(w http.ResponseWriter, r *http.Request) {
-		file, errOpen := os.Open("var/api.csv")
+		_, b, _, _ := runtime.Caller(0)
+		d1 := path.Join(path.Dir(b))
+		file, errOpen := os.Open(d1 + "/../../../../var/api.csv")
 		if errOpen != nil {
 			common.SendErrorResponse(w, errOpen.Error())
 			return

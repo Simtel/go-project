@@ -2,8 +2,10 @@ package common
 
 import (
 	"encoding/json"
+	"mime"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 type JsonResponse struct {
@@ -41,7 +43,12 @@ func SendErrorResponse(w http.ResponseWriter, message string) {
 }
 
 func SendFile(w http.ResponseWriter, r *http.Request, file *os.File) {
-	w.Header().Set("Content-Type", "application/octet-stream")
+
+	mimeType := mime.TypeByExtension(filepath.Ext(file.Name()))
+	if mimeType == "" {
+		mimeType = "application/octet-stream"
+	}
+	w.Header().Set("Content-Type", mimeType)
 	w.Header().Set("Content-Disposition", "attachment; filename=\""+file.Name()+"\"")
 	fileInfo, err := file.Stat()
 	if err != nil {
