@@ -44,12 +44,13 @@ func SendErrorResponse(w http.ResponseWriter, message string) {
 
 func SendFile(w http.ResponseWriter, r *http.Request, file *os.File) {
 
-	mimeType := mime.TypeByExtension(filepath.Ext(file.Name()))
+	ext := filepath.Ext(file.Name())
+	mimeType := mime.TypeByExtension(ext)
 	if mimeType == "" {
 		mimeType = "application/octet-stream"
 	}
 	w.Header().Set("Content-Type", mimeType)
-	w.Header().Set("Content-Disposition", "attachment; filename=\""+file.Name()+"\"")
+	w.Header().Set("Content-Disposition", "attachment; filename=\"file"+ext+"\"")
 	fileInfo, err := file.Stat()
 	if err != nil {
 		http.Error(w, "Не удалось получить информацию о файле", http.StatusInternalServerError)

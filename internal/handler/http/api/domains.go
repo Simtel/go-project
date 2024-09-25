@@ -87,7 +87,7 @@ func (a *DomainsApi) AddRoutes() {
 	a.r.Get("/domains/download", func(w http.ResponseWriter, r *http.Request) {
 		_, b, _, _ := runtime.Caller(0)
 		d1 := path.Join(path.Dir(b))
-		file, errOpen := os.Open(d1 + "/../../../../var/api.csv")
+		file, errOpen := domains2.GetFile(d1 + "/../../../../var/api.csv")
 		if errOpen != nil {
 			common.SendErrorResponse(w, errOpen.Error())
 			return

@@ -4,8 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"go-project/internal/services/armisimtel"
+	"go-project/internal/services/domains"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path"
+	"runtime"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
@@ -161,6 +165,27 @@ func TestDomainsApi_DownloadDomains(t *testing.T) {
 	api := NewDomainsApi(r, mockRepo, mockMySQLRepo)
 	api.AddRoutes()
 
+	var testDomains = []*models.Domain{
+		{ID: 1, Name: "example.com", ExpireAt: "2023-12-31"},
+		{ID: 2, Name: "test.com", ExpireAt: "2024-01-31"},
+	}
+
+	_, b, _, _ := runtime.Caller(0)
+	d1 := path.Join(path.Dir(b))
+	filePath := d1 + "/../../../../var/api.csv"
+
+	errSave := domains.SaveDomains(testDomains, filePath)
+	if errSave != nil {
+		t.Fatal(errSave)
+	}
+
+	defer func(name string) {
+		err := os.Remove(name)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}(filePath)
+
 	req, err := http.NewRequest("GET", "/domains/download", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -177,4 +202,5 @@ func TestDomainsApi_DownloadDomains(t *testing.T) {
 	if contentType != "text/csv; charset=utf-8" {
 		t.Errorf("handler returned wrong content type: got %v want %v", contentType, "text/csv; charset=utf-8")
 	}
+
 }

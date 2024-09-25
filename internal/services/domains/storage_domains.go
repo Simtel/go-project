@@ -36,3 +36,9 @@ func SaveDomains(domains []*models.Domain, filePath string) error {
 	}
 	return nil
 }
+
+func GetFile(filepath string) (*os.File, error) {
+	file, errOpen := os.Open(filepath)
+
+	return file, errOpen
+}
