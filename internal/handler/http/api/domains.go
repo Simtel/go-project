@@ -17,12 +17,12 @@ import (
 
 type DomainsApi struct {
 	r         *chi.Mux
-	repo      *domainsrepo.Repository
-	mysqlRepo *mysqldomainsrepo.DomainsRepo
+	httpRepo  domainsrepo.HttpRepositoryInterface
+	mysqlRepo mysqldomainsrepo.MysqlRepositoryInterface
 }
 
-func NewDomainsApi(r *chi.Mux, repo *domainsrepo.Repository, domainsRepo *mysqldomainsrepo.DomainsRepo) *DomainsApi {
-	return &DomainsApi{r: r, repo: repo, mysqlRepo: domainsRepo}
+func NewDomainsApi(r *chi.Mux, httpRepo domainsrepo.HttpRepositoryInterface, mysqlRepo mysqldomainsrepo.MysqlRepositoryInterface) *DomainsApi {
+	return &DomainsApi{r: r, httpRepo: httpRepo, mysqlRepo: mysqlRepo}
 }
 
 func (a *DomainsApi) AddRoutes() {
@@ -38,14 +38,14 @@ func (a *DomainsApi) AddRoutes() {
 			}
 		}(domainsChannel)
 
-		domainsList, err := a.repo.GetAll(domainsChannel)
+		domainsList, err := a.httpRepo.GetAll(domainsChannel)
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
 		}
 
 		for _, domain := range domainsList {
-			a.mysqlRepo.Add(domain)
+			a.mysqlRepo.Create(domain)
 		}
 
 		common.SendSuccessJsonResponse(w, domainsList)
@@ -57,7 +57,7 @@ func (a *DomainsApi) AddRoutes() {
 			common.SendErrorResponse(w, errConvert.Error())
 			return
 		}
-		domain, err := a.repo.GetById(domainId)
+		domain, err := a.httpRepo.GetById(domainId)
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return
@@ -72,7 +72,7 @@ func (a *DomainsApi) AddRoutes() {
 			return
 		}
 
-		createDomain, err := a.repo.New(domain)
+		createDomain, err := a.httpRepo.New(domain)
 		if err != nil {
 			common.SendErrorResponse(w, err.Error())
 			return

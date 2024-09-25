@@ -16,8 +16,7 @@ func NewDomainsRepo(db *gorm.DB) *DomainsRepo {
 	return &DomainsRepo{db: db}
 }
 
-func (r *DomainsRepo) Add(domain *models.Domain) {
-	fmt.Println("Save domain in db")
+func (r *DomainsRepo) Create(domain *models.Domain) {
 	layout := time.DateTime
 	expireTime, err := time.Parse(layout, domain.ExpireAt)
 	if err != nil {
@@ -27,5 +26,4 @@ func (r *DomainsRepo) Add(domain *models.Domain) {
 
 	model := db.Domain{Domain: domain.Name, User: 1, Expired: expireTime, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 	r.db.Create(&model)
-	fmt.Println("Save domain in db")
 }
