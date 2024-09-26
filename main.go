@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/go-gormigrate/gormigrate/v2"
 	"go-project/internal/app"
-	"go-project/internal/common"
+	"go-project/internal/config"
 	"go-project/internal/database"
 	"gorm.io/gorm"
 	"log"
@@ -15,8 +15,8 @@ import (
 
 // инициализация среды и хранилища файлов
 func initialize() {
-	common.InitEnv()
-	common.InitFileStorage()
+	config.InitEnv()
+	config.InitFileStorage()
 }
 
 // настройка базы данных и выполнение миграций

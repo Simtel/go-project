@@ -1,7 +1,7 @@
 package domainsrepo
 
 import (
-	"go-project/internal/common"
+	"go-project/internal/config"
 	"go-project/internal/services/armisimtel"
 	"net/http"
 	"os"
@@ -9,7 +9,7 @@ import (
 )
 
 func setup() {
-	common.InitEnv()
+	config.InitEnv()
 }
 
 func TestMain(m *testing.M) {
