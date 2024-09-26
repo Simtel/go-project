@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-var VarDir string = "var"
+var VarDir = "var"
 
 func InitFileStorage() {
 	if _, err := os.Stat(VarDir); os.IsNotExist(err) {

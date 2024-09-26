@@ -9,5 +9,5 @@ type HttpRepositoryInterface interface {
 	GetByName(name string) (*models.Domain, error)
 	GetAll(c chan []*models.Domain) ([]*models.Domain, error)
 	GetById(domainId int) (*models.Domain, error)
-	New(payload *armisimtel.DomainPayload) (*models.Domain, error)
+	Create(payload *armisimtel.DomainPayload) (*models.Domain, error)
 }

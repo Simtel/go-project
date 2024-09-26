@@ -1,4 +1,4 @@
-package domains
+package storage
 
 import (
 	"encoding/csv"
@@ -21,7 +21,8 @@ func TestSaveDomains(t *testing.T) {
 	tempDir := t.TempDir()
 	filePath := filepath.Join(tempDir, "api.csv")
 
-	err := SaveDomains(testDomains, filePath)
+	domainStorage := NewStorageDomain()
+	err := domainStorage.Save(testDomains, filePath)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}

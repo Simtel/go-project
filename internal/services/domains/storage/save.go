@@ -1,4 +1,4 @@
-package domains
+package storage
 
 import (
 	"encoding/csv"
@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func SaveDomains(domains []*models.Domain, filePath string) error {
+func (s *DomainStorage) Save(domains []*models.Domain, filePath string) error {
 	file, err := os.Create(filePath)
 	if err != nil {
 		return fmt.Errorf("error opening file: %v", err)
@@ -24,7 +24,7 @@ func SaveDomains(domains []*models.Domain, filePath string) error {
 	for _, domain := range domains {
 		records = append(
 			records,
-			[]string{strconv.Itoa(domain.ID), domain.Name, domain.ExpireAt, time.DateTime},
+			[]string{strconv.Itoa(domain.GetId()), domain.Name, domain.ExpireAt, time.DateTime},
 		)
 	}
 
@@ -35,10 +35,4 @@ func SaveDomains(domains []*models.Domain, filePath string) error {
 		}
 	}
 	return nil
-}
-
-func GetFile(filepath string) (*os.File, error) {
-	file, errOpen := os.Open(filepath)
-
-	return file, errOpen
 }

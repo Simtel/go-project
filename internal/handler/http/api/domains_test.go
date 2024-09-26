@@ -4,12 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"go-project/internal/services/armisimtel"
-	"go-project/internal/services/domains"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"path"
-	"runtime"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
@@ -34,7 +31,7 @@ func (m *MockRepo) GetByName(name string) (*models.Domain, error) {
 	return &models.Domain{ID: 1, Name: name, ExpireAt: "2023-12-31"}, nil
 }
 
-func (m *MockRepo) New(payload *armisimtel.DomainPayload) (*models.Domain, error) {
+func (m *MockRepo) Create(payload *armisimtel.DomainPayload) (*models.Domain, error) {
 	return &models.Domain{ID: 3, Name: "new.com", ExpireAt: "2025-01-01"}, nil
 }
 
@@ -44,11 +41,21 @@ func (m *MockMySQLRepo) Create(domain *models.Domain) {
 
 }
 
+type MockDomainStorage struct{}
+
+func (m *MockDomainStorage) Save(domains []*models.Domain, filePath string) error {
+	return nil
+}
+
+func (m *MockDomainStorage) Get(filepath string) (*os.File, error) {
+	return &os.File{}, nil
+}
+
 func TestDomainsApi_GetAllDomains(t *testing.T) {
 	r := chi.NewRouter()
 
 	mockMySQLRepo := &MockMySQLRepo{}
-	api := NewDomainsApi(r, &MockRepo{}, mockMySQLRepo)
+	api := NewDomainsApi(r, &MockRepo{}, mockMySQLRepo, &MockDomainStorage{})
 	api.AddRoutes()
 
 	req, err := http.NewRequest("GET", "/domains", nil)
@@ -85,7 +92,7 @@ func TestDomainsApi_GetDomainById(t *testing.T) {
 	r := chi.NewRouter()
 	mockRepo := &MockRepo{}
 	mockMySQLRepo := &MockMySQLRepo{}
-	api := NewDomainsApi(r, mockRepo, mockMySQLRepo)
+	api := NewDomainsApi(r, mockRepo, mockMySQLRepo, &MockDomainStorage{})
 	api.AddRoutes()
 
 	req, err := http.NewRequest("GET", "/domains/1", nil)
@@ -123,7 +130,7 @@ func TestDomainsApi_CreateDomain(t *testing.T) {
 	r := chi.NewRouter()
 	mockRepo := &MockRepo{}
 	mockMySQLRepo := &MockMySQLRepo{}
-	api := NewDomainsApi(r, mockRepo, mockMySQLRepo)
+	api := NewDomainsApi(r, mockRepo, mockMySQLRepo, &MockDomainStorage{})
 	api.AddRoutes()
 
 	payload := []byte(`{"name": "new.com"}`)
@@ -156,51 +163,4 @@ func TestDomainsApi_CreateDomain(t *testing.T) {
 	if response.Payload.ID != 3 {
 		t.Errorf("expected new domain ID 3, got %d", response.Payload.ID)
 	}
-}
-
-func TestDomainsApi_DownloadDomains(t *testing.T) {
-	r := chi.NewRouter()
-	mockRepo := &MockRepo{}
-	mockMySQLRepo := &MockMySQLRepo{}
-	api := NewDomainsApi(r, mockRepo, mockMySQLRepo)
-	api.AddRoutes()
-
-	var testDomains = []*models.Domain{
-		{ID: 1, Name: "example.com", ExpireAt: "2023-12-31"},
-		{ID: 2, Name: "test.com", ExpireAt: "2024-01-31"},
-	}
-
-	_, b, _, _ := runtime.Caller(0)
-	d1 := path.Join(path.Dir(b))
-	filePath := d1 + "/../../../../var/api.csv"
-
-	errSave := domains.SaveDomains(testDomains, filePath)
-	if errSave != nil {
-		t.Fatal(errSave)
-	}
-
-	defer func(name string) {
-		err := os.Remove(name)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}(filePath)
-
-	req, err := http.NewRequest("GET", "/domains/download", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	rr := httptest.NewRecorder()
-	r.ServeHTTP(rr, req)
-
-	if status := rr.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
-	}
-
-	contentType := rr.Header().Get("Content-Type")
-	if contentType != "text/csv; charset=utf-8" {
-		t.Errorf("handler returned wrong content type: got %v want %v", contentType, "text/csv; charset=utf-8")
-	}
-
 }

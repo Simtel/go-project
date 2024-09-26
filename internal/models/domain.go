@@ -6,6 +6,6 @@ type Domain struct {
 	ExpireAt string `json:"expire_at"`
 }
 
-func GetId(domain *Domain) int {
+func (domain *Domain) GetId() int {
 	return domain.ID
 }
