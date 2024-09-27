@@ -10,10 +10,10 @@ build:
 	go build
 
 run:
-	go run .
+	go run . http
 
 watch:
-	 ~/go/bin/gow run .
+	 ~/go/bin/gow run . http
 
 mocks:
 	go generate ./...
