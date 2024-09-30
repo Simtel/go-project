@@ -5,11 +5,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
-	"github.com/go-gormigrate/gormigrate/v2"
 	"go-project/internal/config"
 	"go-project/internal/database"
 	"gorm.io/gorm"
-	"log"
 	"net/http"
 )
 
@@ -40,14 +38,6 @@ func setupRouter() *chi.Mux {
 
 func setupDatabase() *gorm.DB {
 	db := database.NewDbMysql()
-	database.MigrateDB(db)
-
-	m := gormigrate.New(db, gormigrate.DefaultOptions, database.GetMigrations())
-
-	if err := m.Migrate(); err != nil {
-		log.Fatalf("Migration failed: %v", err)
-	}
-
 	return db
 }
 
