@@ -25,6 +25,7 @@ func main() {
 	rootCmd.AddCommand(
 		cmd.RunHTTP(),
 		cmd.RunMigrate(),
+		cmd.RunMigrateStatus(),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
