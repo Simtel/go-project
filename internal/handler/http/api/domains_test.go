@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"go-project/internal/models/db"
 	"go-project/internal/services/armisimtel"
 	"net/http"
 	"net/http/httptest"
@@ -39,6 +40,11 @@ type MockMySQLRepo struct{}
 
 func (m *MockMySQLRepo) Create(domain *models.Domain) {
 
+}
+
+func (m *MockMySQLRepo) GetAll() ([]*db.Domain, error) {
+
+	return []*db.Domain{}, nil
 }
 
 type MockDomainStorage struct{}
