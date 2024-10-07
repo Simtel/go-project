@@ -26,7 +26,7 @@ func NewContainer(http *http.Client, router *chi.Mux, db *gorm.DB) *Container {
 	}
 }
 
-func (c *Container) GetDomainsRepo() *domainsrepo.Repository {
+func (c *Container) GetDomainsRepo() domainsrepo.HttpRepositoryInterface {
 	return domainsrepo.NewRepository(c.GetArmiSimtelRequest())
 }
 
@@ -62,7 +62,7 @@ func (c *Container) AddHandler(h api.Handler) {
 	h.AddRoutes()
 }
 
-func (c *Container) GetMysqlDomainsRepo() *mysqldomainsrepo.DomainsRepo {
+func (c *Container) GetMysqlDomainsRepo() mysqldomainsrepo.MysqlRepositoryInterface {
 	return mysqldomainsrepo.NewDomainsRepo(c.GetDB())
 }
 

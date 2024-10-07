@@ -8,7 +8,7 @@ type Repository struct {
 	request armisimtel.RequestInterface
 }
 
-func NewRepository(request armisimtel.RequestInterface) *Repository {
+func NewRepository(request armisimtel.RequestInterface) HttpRepositoryInterface {
 	return &Repository{
 		request: request,
 	}
