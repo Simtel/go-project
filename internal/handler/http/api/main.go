@@ -52,6 +52,15 @@ func (a *MainApi) AddRoutes() {
 
 		common.SendSuccessJsonResponse(w, result)
 	})
+
+	a.r.Get("/slice", func(w http.ResponseWriter, r *http.Request) {
+		var slice []string
+
+		slice = append(slice, "test")
+		slice = append(slice, "example")
+		slice = append(slice, "1")
+		common.SendSuccessJsonResponse(w, slice)
+	})
 }
 
 type Home struct {

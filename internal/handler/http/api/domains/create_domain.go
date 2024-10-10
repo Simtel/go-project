@@ -1,4 +1,4 @@
-package api
+package domains
 
 import (
 	"github.com/go-chi/render"

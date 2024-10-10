@@ -6,6 +6,7 @@ import (
 	mysqldomainsrepo "go-project/internal/adapter/mysqlrepo/domainsrepo"
 	"go-project/internal/adapter/mysqlrepo/usersrepo"
 	"go-project/internal/handler/http/api"
+	"go-project/internal/handler/http/api/domains"
 	"go-project/internal/services/armisimtel"
 	"go-project/internal/services/domains/storage"
 	"gorm.io/gorm"
@@ -34,8 +35,8 @@ func (c *Container) GetArmiSimtelRequest() armisimtel.RequestInterface {
 	return armisimtel.NewRequest(c.GetHttpClient())
 }
 
-func (c *Container) GetDomainsApi() *api.DomainsApi {
-	return api.NewDomainsApi(c.GetRouter(), c.GetDomainsRepo(), c.GetMysqlDomainsRepo(), c.GetDomainStorage())
+func (c *Container) GetDomainsApi() *domains.DomainsApi {
+	return domains.NewDomainsApi(c.GetRouter(), c.GetDomainsRepo(), c.GetMysqlDomainsRepo(), c.GetDomainStorage())
 }
 
 func (c *Container) GetHttpClient() *http.Client {
