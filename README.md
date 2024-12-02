@@ -22,7 +22,19 @@
 cp .env .env.local
 ```
 
-3. Run the project:You can run the project using the following command:
+3. Up containers
+```bash
+make up
+```
+
+4. Create database db in Adminer
+
+5. Run migrations
+```bash
+make migrate
+```
+
+6. Run the project:You can run the project using the following command:
 ```bash
 make run
 ```
@@ -31,7 +43,7 @@ Or use the watch mode for automatic restarts on code changes:
 make watch
 ```
 
-4. Run tests:To execute tests in the project, use the following command:
+7. Run tests:To execute tests in the project, use the following command:
 ```bash
 make test
 ```

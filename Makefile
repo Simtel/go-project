@@ -32,3 +32,6 @@ cli: ## PHP console
 
 lint:
 	golangci-lint run
+
+migrate:
+	go run . migrate
