@@ -7,7 +7,7 @@ import (
 	"go-project/internal/services/domains/storage"
 )
 
-type DomainsApi struct {
+type Api struct {
 	r         *chi.Mux
 	httpRepo  domainsrepo.HttpRepositoryInterface
 	mysqlRepo mysqldomainsrepo.MysqlRepositoryInterface
@@ -19,11 +19,11 @@ func NewDomainsApi(
 	httpRepo domainsrepo.HttpRepositoryInterface,
 	mysqlRepo mysqldomainsrepo.MysqlRepositoryInterface,
 	storage storage.DomainStorageInterface,
-) *DomainsApi {
-	return &DomainsApi{r: r, httpRepo: httpRepo, mysqlRepo: mysqlRepo, storage: storage}
+) *Api {
+	return &Api{r: r, httpRepo: httpRepo, mysqlRepo: mysqlRepo, storage: storage}
 }
 
-func (a *DomainsApi) AddRoutes() {
+func (a *Api) AddRoutes() {
 	a.r.Get("/domains", a.GetDomains)
 	a.r.Get("/domains/{id}", a.GetDomainById)
 	a.r.Post("/domains", a.CreateDomain)

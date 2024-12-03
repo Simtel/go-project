@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (a *DomainsApi) GetDomains(w http.ResponseWriter, r *http.Request) {
+func (a *Api) GetDomains(w http.ResponseWriter, r *http.Request) {
 	domainsChannel := make(chan []*models.Domain)
 
 	go func(c chan []*models.Domain) {

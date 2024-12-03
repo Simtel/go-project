@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (a *DomainsApi) CreateDomain(w http.ResponseWriter, r *http.Request) {
+func (a *Api) CreateDomain(w http.ResponseWriter, r *http.Request) {
 	domain := &armisimtel.DomainPayload{}
 	if err := render.Bind(r, domain); err != nil {
 		common.SendErrorResponse(w, err.Error())

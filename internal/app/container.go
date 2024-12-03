@@ -35,7 +35,7 @@ func (c *Container) GetArmiSimtelRequest() armisimtel.RequestInterface {
 	return armisimtel.NewRequest(c.GetHttpClient())
 }
 
-func (c *Container) GetDomainsApi() *domains.DomainsApi {
+func (c *Container) GetDomainsApi() *domains.Api {
 	return domains.NewDomainsApi(c.GetRouter(), c.GetDomainsRepo(), c.GetMysqlDomainsRepo(), c.GetDomainStorage())
 }
 

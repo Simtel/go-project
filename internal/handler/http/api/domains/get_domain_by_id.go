@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func (a *DomainsApi) GetDomainById(w http.ResponseWriter, r *http.Request) {
+func (a *Api) GetDomainById(w http.ResponseWriter, r *http.Request) {
 
 	domainId, errConvert := strconv.Atoi(chi.URLParam(r, "id"))
 	if errConvert != nil {

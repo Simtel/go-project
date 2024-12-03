@@ -8,7 +8,7 @@ import (
 	"runtime"
 )
 
-func (a *DomainsApi) Download(w http.ResponseWriter, r *http.Request) {
+func (a *Api) Download(w http.ResponseWriter, r *http.Request) {
 	_, b, _, _ := runtime.Caller(0)
 	d1 := path.Join(path.Dir(b))
 	file, errOpen := a.storage.Get(d1 + "/../../../../var/api.csv")
