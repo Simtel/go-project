@@ -2,11 +2,13 @@ package api
 
 import (
 	"bytes"
+	"github.com/domodwyer/mailyak"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"go-project/internal/common"
 	"html/template"
 	"net/http"
+	"net/smtp"
 )
 
 type MainApi struct {
@@ -60,6 +62,21 @@ func (a *MainApi) AddRoutes() {
 		slice = append(slice, "example")
 		slice = append(slice, "1")
 		common.SendSuccessJsonResponse(w, slice)
+	})
+
+	a.r.Get("/sendmail", func(w http.ResponseWriter, r *http.Request) {
+		mail := mailyak.New("localhost:1025", smtp.PlainAuth("", "", "", "localhost"))
+		mail.To("dom@itsallbroken.com")
+		mail.From("jsmith@example.com")
+		mail.FromName("Bananas for Friends")
+		mail.Subject("Business proposition")
+		// Or set the body using a string setter
+		mail.Plain().Set("Get a real email client")
+
+		// And you're done!
+		if err := mail.Send(); err != nil {
+			panic(err)
+		}
 	})
 }
 
