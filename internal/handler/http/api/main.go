@@ -78,6 +78,22 @@ func (a *MainApi) AddRoutes() {
 			panic(err)
 		}
 	})
+
+	a.r.Get("/ip", func(w http.ResponseWriter, r *http.Request) {
+		type Result struct {
+			Ip string `json:"ip"`
+		}
+		var result *Result
+		forwarded := r.Header.Get("X-FORWARDED-FOR")
+		if forwarded != "" {
+			result = &Result{Ip: forwarded}
+
+		} else {
+			result = &Result{Ip: r.RemoteAddr}
+		}
+
+		common.SendSuccessJsonResponse(w, result)
+	})
 }
 
 type Home struct {
