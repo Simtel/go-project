@@ -2,12 +2,11 @@ package config
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"os"
 	"path/filepath"
-)
 
-const projectDirName = "go-project"
+	"github.com/joho/godotenv"
+)
 
 func InitEnv() {
 	currentWorkDirectory, _ := os.Getwd()
